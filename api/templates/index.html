@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projeto Gerenciador de Tarefas Match!</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>GERENCIADOR DE TAREFAS</h1>
+        </header>
+
+        <form method="post" action="/adicionar">
+            <div class="todo-container">
+                <div class="todo-inputs-container">
+                    <div class="todo-inputs">
+                        <label for="descricao">TAREFA:</label>
+                        <input type="text" name="descricao" required>
+                    </div>
+                    <div class="todo-inputs">
+                        <label for="data">DATA:</label>
+                        <input type="date" name="data" required>
+                    </div>
+                    <div class="todo-inputs">
+                        <label for="prioridade">PRIORIDADE:</label>
+                        <select name="prioridade" required>
+                            <option value="Não urgente">Não urgente</option>
+                            <option value="Importante">Importante</option>
+                            <option value="Urgente">Urgente</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="todo-btn-container">
+                    <input class="todo-add-btn" type="submit" value="Adicionar Tarefa">
+                </div>
+            </div>
+        </form>
+
+        <div class="table-container">
+            <h2>LISTA DE TAREFAS:</h2>
+            <table class="task-table">
+                <thead>
+                    <tr>
+                        <th>DESCRIÇÃO</th>
+                        <th>DATA</th>
+                        <th>PRIORIDADE</th>
+                        <th>CONCLUÍDA</th>
+                        <th>AÇÃO</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for tarefa in tarefas %}
+                    <tr>
+                        <td>{{ tarefa.descricao }}</td>
+                        <td>{{ tarefa.data }}</td>
+                        <td>{{ tarefa.prioridade }}</td>
+                        <td>
+                            {% if tarefa.concluida %}
+                            Sim
+                            {% else %}
+                            Não
+                            {% endif %}
+                        </td>
+                        <td>
+                            <button onclick="excluirTarefa({{ tarefa.id }})" class="remove">Excluir</button>
+                            <button onclick="concluirTarefa({{ tarefa.id }})" class="complete">Concluir</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+
+<script>
+
+    function excluirTarefa(id) {
+
+        fetch(`/excluir/${id}`, {
+            method: 'DELETE'
+        })
+        .then(response => {
+                    window.location.reload();
+            })
+            .catch(error => console.error('Erro ao excluir tarefa:', error));
+    }
+
+    function concluirTarefa(id) {
+        fetch(`/concluir/${id}`, {
+            method: 'PUT'
+        })
+            .then(response => {
+                window.location.reload();
+            })
+            .catch(error => console.error('Erro ao concluir tarefa:', error));
+    }
+
+</script>
+</html>
