@@ -4,7 +4,7 @@ app = Flask(__name__)
 
 tarefas = []
 
-class Tarefa:
+class Tarefa:c
     def __init__(self, id, descricao, data, prioridade, concluida) -> None:
         self.id = id
         self.descricao = descricao
